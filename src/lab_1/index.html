@@ -187,8 +187,8 @@
             {pollinator_species: "Bumblebee", avg_body_mass_g: 0.26, avg_wing_span_mm: 24, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.9}
         ];
 
-        // Create visualizations
-        document.getElementById("body-mass-chart").appendChild(
+        // Question 1: Body Mass vs Wing Span Scatter Plot
+        document.getElementById("body-mass-chart").replaceChildren(
             Plot.plot({
                 title: "Body Mass vs Wing Span by Pollinator Species",
                 marks: [
@@ -208,7 +208,8 @@
             })
         );
 
-        document.getElementById("weather-chart").appendChild(
+        // Question 2: Weather Condition Bar Chart
+        document.getElementById("weather-chart").replaceChildren(
             Plot.plot({
                 title: "Pollinator Activity by Weather Condition",
                 marks: [
@@ -226,7 +227,8 @@
             })
         );
 
-        document.getElementById("nectar-chart").appendChild(
+        // Question 3: Nectar Production Box Plot
+        document.getElementById("nectar-chart").replaceChildren(
             Plot.plot({
                 title: "Nectar Production by Flower Species",
                 marks: [
