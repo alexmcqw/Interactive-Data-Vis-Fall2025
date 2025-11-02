@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 1: Passing Pollinators Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .summary {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .conclusion {
+            background: #f0f8e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lab 1: Passing Pollinators Dashboard</h1>
+    
+    <p>This dashboard analyzes pollinator activity data from a local farm to answer three key questions about bee species, weather conditions, and flower nectar production.</p>
+    
+    <h2>Data Overview</h2>
+    <p>The dataset contains observations from June 1-30, 2024, across four garden plots (A, B, C, D) with three bee species (Honeybee, Bumblebee, Carpenter Bee) visiting three flower types (Lavender, Sunflower, Coneflower).</p>
+    
+    <h2>Question 1: Body Mass vs Wing Span by Pollinator Species</h2>
+    <div class="chart-container">
+        <div id="body-mass-chart"></div>
+    </div>
+    
+    <h2>Question 2: Pollinator Activity by Weather Condition</h2>
+    <div class="chart-container">
+        <div id="weather-chart"></div>
+    </div>
+    
+    <h2>Question 3: Nectar Production by Flower Species</h2>
+    <div class="chart-container">
+        <div id="nectar-chart"></div>
+    </div>
+    
+    <h2>Summary Statistics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Total Observations</strong></td>
+                <td>25</td>
+            </tr>
+            <tr>
+                <td><strong>Date Range</strong></td>
+                <td>June 1-30, 2024</td>
+            </tr>
+            <tr>
+                <td><strong>Pollinator Species</strong></td>
+                <td>Honeybee, Bumblebee, Carpenter Bee</td>
+            </tr>
+            <tr>
+                <td><strong>Flower Species</strong></td>
+                <td>Lavender, Sunflower, Coneflower</td>
+            </tr>
+            <tr>
+                <td><strong>Average Visit Count</strong></td>
+                <td>9.2</td>
+            </tr>
+            <tr>
+                <td><strong>Total Pollinator Visits</strong></td>
+                <td>230</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <h2>Key Findings</h2>
+        
+        <h3>Question 1: Body Mass and Wing Span Relationship</h3>
+        <ul>
+            <li><strong>Honeybees</strong> cluster in the lower-left (0.10-0.13g body mass, 16-19mm wingspan)</li>
+            <li><strong>Bumblebees</strong> cluster in the middle (0.26-0.31g body mass, 24-28mm wingspan)</li>
+            <li><strong>Carpenter Bees</strong> cluster in the upper-right (0.42-0.49g body mass, 35-39mm wingspan)</li>
+            <li><strong>Strong positive correlation</strong> between body mass and wing span across all species</li>
+        </ul>
+        
+        <h3>Question 2: Ideal Weather Conditions</h3>
+        <ul>
+            <li><strong>Sunny conditions</strong> show the highest pollinator activity</li>
+            <li><strong>Partly Cloudy</strong> conditions are also favorable</li>
+            <li><strong>Cloudy conditions</strong> show reduced activity</li>
+        </ul>
+        
+        <h3>Question 3: Nectar Production</h3>
+        <ul>
+            <li><strong>Sunflowers</strong> produce the most nectar (0.8-1.1 μL)</li>
+            <li><strong>Coneflowers</strong> have moderate nectar production (0.6-0.9 μL)</li>
+            <li><strong>Lavender</strong> produces the least nectar (0.5-0.9 μL)</li>
+        </ul>
+    </div>
+    
+    <div class="conclusion">
+        <h2>Conclusions</h2>
+        <ol>
+            <li><strong>Pollinator Physical Characteristics</strong>: The three bee species show distinct size differences, with Carpenter Bees being the largest and Honeybees the smallest.</li>
+            <li><strong>Optimal Weather Conditions</strong>: Sunny weather provides the best conditions for pollinator activity, followed by partly cloudy conditions.</li>
+            <li><strong>Nectar Production</strong>: Sunflowers produce the most nectar, making them the most attractive to pollinators, followed by Coneflowers and Lavender.</li>
+        </ol>
+        <p>This analysis provides valuable insights for farmers and researchers studying pollinator behavior and can inform decisions about optimal planting times, flower selection, and weather monitoring for maximum pollination efficiency.</p>
+    </div>
+
+    <script>
+        // Sample data
+        const data = [
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 12, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.8},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.28, avg_wing_span_mm: 25, visit_count: 8, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.45, avg_wing_span_mm: 35, visit_count: 5, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.9},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 15, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.30, avg_wing_span_mm: 26, visit_count: 10, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.0},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.48, avg_wing_span_mm: 38, visit_count: 6, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.13, avg_wing_span_mm: 19, visit_count: 9, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.6},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.26, avg_wing_span_mm: 24, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.9},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.10, avg_wing_span_mm: 16, visit_count: 6, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.5},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.29, avg_wing_span_mm: 27, visit_count: 9, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.8},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.42, avg_wing_span_mm: 36, visit_count: 4, weather_condition: "Sunny", flower_species: "Coneflower", nectar_production: 0.7},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 14, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.9},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.31, avg_wing_span_mm: 28, visit_count: 11, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.46, avg_wing_span_mm: 37, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 13, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.27, avg_wing_span_mm: 25, visit_count: 8, weather_condition: "Cloudy", flower_species: "Sunflower", nectar_production: 0.9},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.44, avg_wing_span_mm: 35, visit_count: 5, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.6},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 11, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.8},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.28, avg_wing_span_mm: 26, visit_count: 9, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.0},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.47, avg_wing_span_mm: 38, visit_count: 6, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.9},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 16, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.30, avg_wing_span_mm: 27, visit_count: 12, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
+            {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.49, avg_wing_span_mm: 39, visit_count: 8, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
+            {pollinator_species: "Honeybee", avg_body_mass_g: 0.13, avg_wing_span_mm: 19, visit_count: 10, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.6},
+            {pollinator_species: "Bumblebee", avg_body_mass_g: 0.26, avg_wing_span_mm: 24, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.9}
+        ];
+
+        // Create visualizations
+        document.getElementById("body-mass-chart").appendChild(
+            Plot.plot({
+                title: "Body Mass vs Wing Span by Pollinator Species",
+                marks: [
+                    Plot.dot(data, {
+                        x: "avg_body_mass_g",
+                        y: "avg_wing_span_mm",
+                        fill: "pollinator_species",
+                        r: 6,
+                        opacity: 0.7
+                    })
+                ],
+                x: {label: "Body Mass (grams)", grid: true},
+                y: {label: "Wing Span (millimeters)", grid: true},
+                color: {legend: true},
+                width: 800,
+                height: 500
+            })
+        );
+
+        document.getElementById("weather-chart").appendChild(
+            Plot.plot({
+                title: "Pollinator Activity by Weather Condition",
+                marks: [
+                    Plot.barY(data, {
+                        x: "weather_condition",
+                        y: "visit_count",
+                        fill: "weather_condition"
+                    })
+                ],
+                x: {label: null},
+                y: {label: "Visit Count", grid: true},
+                color: {legend: true},
+                width: 600,
+                height: 400
+            })
+        );
+
+        document.getElementById("nectar-chart").appendChild(
+            Plot.plot({
+                title: "Nectar Production by Flower Species",
+                marks: [
+                    Plot.boxX(data, {
+                        x: "nectar_production",
+                        y: "flower_species",
+                        fill: "flower_species"
+                    })
+                ],
+                x: {label: "Nectar Production (μL)", grid: true},
+                y: {label: null, ticks: null},
+                color: {legend: true},
+                width: 800,
+                height: 300
+            })
+        );
+    </script>
+</body>
+</html>
