@@ -7,34 +7,8 @@ This dashboard analyzes pollinator activity data from a local farm to answer thr
 The dataset contains observations from June 1-30, 2024, across four garden plots (A, B, C, D) with three bee species (Honeybee, Bumblebee, Carpenter Bee) visiting three flower types (Lavender, Sunflower, Coneflower).
 
 ```js
-// Pollinator activity data
-data = [
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 12, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.8},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.28, avg_wing_span_mm: 25, visit_count: 8, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.45, avg_wing_span_mm: 35, visit_count: 5, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.9},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 15, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.30, avg_wing_span_mm: 26, visit_count: 10, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.0},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.48, avg_wing_span_mm: 38, visit_count: 6, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.13, avg_wing_span_mm: 19, visit_count: 9, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.6},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.26, avg_wing_span_mm: 24, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.9},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.10, avg_wing_span_mm: 16, visit_count: 6, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.5},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.29, avg_wing_span_mm: 27, visit_count: 9, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.8},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.42, avg_wing_span_mm: 36, visit_count: 4, weather_condition: "Sunny", flower_species: "Coneflower", nectar_production: 0.7},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 14, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.9},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.31, avg_wing_span_mm: 28, visit_count: 11, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.46, avg_wing_span_mm: 37, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 13, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.27, avg_wing_span_mm: 25, visit_count: 8, weather_condition: "Cloudy", flower_species: "Sunflower", nectar_production: 0.9},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.44, avg_wing_span_mm: 35, visit_count: 5, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.6},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.12, avg_wing_span_mm: 18, visit_count: 11, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.8},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.28, avg_wing_span_mm: 26, visit_count: 9, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.0},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.47, avg_wing_span_mm: 38, visit_count: 6, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.9},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.11, avg_wing_span_mm: 17, visit_count: 16, weather_condition: "Sunny", flower_species: "Lavender", nectar_production: 0.7},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.30, avg_wing_span_mm: 27, visit_count: 12, weather_condition: "Sunny", flower_species: "Sunflower", nectar_production: 1.1},
-  {pollinator_species: "Carpenter Bee", avg_body_mass_g: 0.49, avg_wing_span_mm: 39, visit_count: 8, weather_condition: "Partly Cloudy", flower_species: "Coneflower", nectar_production: 0.8},
-  {pollinator_species: "Honeybee", avg_body_mass_g: 0.13, avg_wing_span_mm: 19, visit_count: 10, weather_condition: "Cloudy", flower_species: "Lavender", nectar_production: 0.6},
-  {pollinator_species: "Bumblebee", avg_body_mass_g: 0.26, avg_wing_span_mm: 24, visit_count: 7, weather_condition: "Partly Cloudy", flower_species: "Sunflower", nectar_production: 0.9}
-]
+// Load pollinator activity data from CSV file
+data = FileAttachment("data/pollinator_activity_data.csv").csv({typed: true})
 ```
 
 ## Question 1: Body Mass vs Wing Span by Pollinator Species
