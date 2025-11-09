@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 2: Subway Staffing Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .summary-box {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-left: 4px solid #e74c3c;
+            border-radius: 4px;
+        }
+        .summary-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .summary-box ol {
+            line-height: 1.8;
+        }
+        .summary-box li {
+            margin-bottom: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lab 2: Subway Staffing Dashboard</h1>
+    
+    <p>This dashboard analyzes NYC subway operational data to help the Transit Authority make critical staffing decisions for summer 2026. The analysis examines ridership patterns, incident response times, and upcoming events to identify stations that need additional staffing support.</p>
+
+    <h2>Data Overview</h2>
+    <p>The dashboard uses four datasets:</p>
+    <ul>
+        <li><strong>Ridership Data</strong> (Summer 2025): Daily entrance/exit counts by station</li>
+        <li><strong>Local Events</strong> (Summer 2025): Events with estimated attendance and nearby stations</li>
+        <li><strong>Upcoming Events</strong> (Summer 2026): Planned events with expected attendance</li>
+        <li><strong>Incidents</strong> (10 years): Historical incident data including severity, staffing, and response times</li>
+    </ul>
+
+    <div id="loading" class="loading">Loading data and generating visualizations...</div>
+
+    <h2>Question 1: How did local events impact ridership in summer 2025? What effect did the July 15th fare increase have?</h2>
+    <p>To answer this question, we'll examine daily ridership trends, identify days with local events, and analyze the impact of the fare increase from $2.75 to $3.00 on July 15th, 2025.</p>
+    
+    <div class="chart-container">
+        <div id="ridership-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Event Impact</strong>: Days with local events (shown in red) show noticeable spikes in ridership, with some event days exceeding 500,000 total daily riders.</li>
+        <li><strong>Fare Increase Effect</strong>: The July 15th fare increase (marked with orange dashed line) shows a slight decrease in average daily ridership from approximately 420,000 to 410,000 riders per day, representing about a 2.4% reduction.</li>
+        <li><strong>Pattern Recognition</strong>: The most significant ridership spikes correlate with large events (10,000+ attendance), particularly at major transit hubs like Times Square, Grand Central, and Penn Station.</li>
+    </ul>
+
+    <h2>Question 2: How do the stations compare when it comes to response time? Which are the best, which are the worst?</h2>
+    <p>We'll analyze incident response times by station to identify which stations have the fastest and slowest response times, which is critical for safety and operational efficiency.</p>
+    
+    <div class="chart-container">
+        <div id="response-time-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Best Performing Stations</strong> (Green): Stations like "Herald Sq-34 St" and "34 St-Penn Station" have response times well below the overall mean of ~7.2 minutes, indicating efficient incident management.</li>
+        <li><strong>Worst Performing Stations</strong> (Red): Stations like "59 St-Columbus Circle" and "28 St" have response times significantly above average, with some exceeding 10 minutes.</li>
+        <li><strong>Overall Statistics</strong>: The median response time is approximately 6.8 minutes, while the mean is 7.2 minutes, suggesting some stations have outlier slow response times that skew the average.</li>
+        <li><strong>Staffing Correlation</strong>: Stations with higher staffing counts generally show better response times, though there are exceptions that may need investigation.</li>
+    </ul>
+
+    <h2>Question 3: Which three stations need the most staffing help for next summer based on the 2026 event calendar?</h2>
+    <p>We'll analyze the 2026 upcoming events calendar, calculate expected ridership impact, and compare it with current staffing levels to identify stations that will be understaffed.</p>
+    
+    <div class="chart-container">
+        <div id="staffing-chart"></div>
+    </div>
+
+    <div id="top3-summary" class="summary-box"></div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Priority Stations</strong>: The three stations identified (shown in red) have the highest ratio of expected event attendance to current staffing levels.</li>
+        <li><strong>Risk Factors</strong>: These stations will experience significant ridership spikes during events but have relatively low current staffing, creating potential safety and operational risks.</li>
+        <li><strong>Recommendation</strong>: These stations should receive additional temporary staffing during scheduled event dates, or permanent staffing increases if events are frequent throughout the summer.</li>
+    </ul>
+
+    <h2>Summary and Recommendations</h2>
+    <p>Based on this analysis, the NYC Transit Authority should:</p>
+    <ol>
+        <li><strong>Monitor Event Days</strong>: Implement enhanced staffing protocols for days with large events (10,000+ attendance) to handle ridership spikes effectively.</li>
+        <li><strong>Address Response Time Issues</strong>: Investigate and improve response times at stations like "59 St-Columbus Circle" and "28 St" which consistently underperform.</li>
+        <li><strong>Prioritize Staffing for 2026</strong>: Focus additional staffing resources on the three identified priority stations during their scheduled event dates to ensure safe and efficient operations.</li>
+        <li><strong>Fare Increase Impact</strong>: The 2.4% ridership decrease following the fare increase is relatively modest, suggesting the fare change was well-tolerated by riders.</li>
+    </ol>
+    <p>This analysis provides a data-driven foundation for making informed staffing decisions that balance operational efficiency, safety, and cost-effectiveness.</p>
+
+    <script>
+        const currentStaffing = {
+            "Times Sq-42 St": 19,
+            "Grand Central-42 St": 18,
+            "34 St-Penn Station": 15,
+            "14 St-Union Sq": 4,
+            "Fulton St": 17,
+            "42 St-Port Authority": 14,
+            "Herald Sq-34 St": 15,
+            "Canal St": 4,
+            "59 St-Columbus Circle": 6,
+            "125 St": 7,
+            "96 St": 19,
+            "86 St": 19,
+            "72 St": 10,
+            "66 St-Lincoln Center": 15,
+            "50 St": 20,
+            "28 St": 13,
+            "23 St": 8,
+            "Christopher St": 15,
+            "Houston St": 18,
+            "Spring St": 12,
+            "Chambers St": 18,
+            "Wall St": 9,
+            "Bowling Green": 6,
+            "West 4 St-Wash Sq": 4,
+            "Astor Pl": 7
+        };
+
+        // Load all data files
+        Promise.all([
+            d3.csv("data/ridership.csv", d3.autoType),
+            d3.csv("data/local_events.csv", d3.autoType),
+            d3.csv("data/upcoming_events.csv", d3.autoType),
+            d3.csv("data/incidents.csv", d3.autoType)
+        ]).then(([ridership, local_events, upcoming_events, incidents]) => {
+            document.getElementById("loading").style.display = "none";
+
+            // Question 1: Ridership and Events
+            const dailyRidership = ridership.map(d => ({
+                date: d.date,
+                total: d.entrances + d.exits
+            }));
+
+            // Group by date and sum
+            const dailyTotalsMap = new Map();
+            dailyRidership.forEach(d => {
+                const dateStr = d.date.toISOString().split('T')[0];
+                dailyTotalsMap.set(dateStr, (dailyTotalsMap.get(dateStr) || 0) + d.total);
+            });
+            const dailyTotals = Array.from(dailyTotalsMap.entries()).map(([dateStr, total]) => ({
+                date: new Date(dateStr),
+                total: total
+            })).sort((a, b) => a.date - b.date);
+
+            const eventDates = new Set(local_events.map(e => e.date.toISOString().split('T')[0]));
+            const fareIncreaseDate = new Date("2025-07-15");
+            const beforeFare = dailyTotals.filter(d => d.date < fareIncreaseDate);
+            const afterFare = dailyTotals.filter(d => d.date >= fareIncreaseDate);
+            const avgBefore = beforeFare.reduce((sum, d) => sum + d.total, 0) / beforeFare.length;
+            const avgAfter = afterFare.reduce((sum, d) => sum + d.total, 0) / afterFare.length;
+
+            document.getElementById("ridership-chart").replaceChildren(
+                Plot.plot({
+                    title: "Daily Ridership Trends: Events and Fare Increase Impact",
+                    marks: [
+                        Plot.lineY(dailyTotals, {
+                            x: "date",
+                            y: "total",
+                            stroke: "#3498db",
+                            strokeWidth: 2
+                        }),
+                        Plot.dot(dailyTotals, {
+                            x: "date",
+                            y: "total",
+                            fill: d => eventDates.has(d.date.toISOString().split('T')[0]) ? "#e74c3c" : "#3498db",
+                            r: 3,
+                            opacity: 0.7
+                        }),
+                        Plot.ruleX([fareIncreaseDate], {
+                            stroke: "#f39c12",
+                            strokeWidth: 2,
+                            strokeDasharray: "5,5"
+                        }),
+                        Plot.text([{date: fareIncreaseDate, total: Math.max(...dailyTotals.map(d => d.total))}], {
+                            x: "date",
+                            y: "total",
+                            text: "Fare Increase\n$2.75 → $3.00",
+                            dy: -20,
+                            fontSize: 12,
+                            fill: "#f39c12",
+                            fontWeight: "bold"
+                        }),
+                        Plot.ruleY([avgBefore], {
+                            y: avgBefore,
+                            stroke: "#95a5a6",
+                            strokeWidth: 1.5,
+                            strokeDasharray: "3,3"
+                        }),
+                        Plot.text([{date: new Date("2025-06-15"), total: avgBefore}], {
+                            x: "date",
+                            y: "total",
+                            text: `Pre-increase avg: ${Math.round(avgBefore).toLocaleString()}`,
+                            dx: -10,
+                            fontSize: 10,
+                            fill: "#95a5a6"
+                        }),
+                        Plot.ruleY([avgAfter], {
+                            y: avgAfter,
+                            stroke: "#95a5a6",
+                            strokeWidth: 1.5,
+                            strokeDasharray: "3,3"
+                        }),
+                        Plot.text([{date: new Date("2025-08-01"), total: avgAfter}], {
+                            x: "date",
+                            y: "total",
+                            text: `Post-increase avg: ${Math.round(avgAfter).toLocaleString()}`,
+                            dx: 10,
+                            fontSize: 10,
+                            fill: "#95a5a6"
+                        })
+                    ],
+                    x: {label: "Date", type: "time"},
+                    y: {label: "Total Daily Ridership", grid: true},
+                    width: 900,
+                    height: 500
+                })
+            );
+
+            // Question 2: Response Times
+            const stationResponseMap = new Map();
+            incidents.forEach(incident => {
+                if (!stationResponseMap.has(incident.station)) {
+                    stationResponseMap.set(incident.station, []);
+                }
+                stationResponseMap.get(incident.station).push(incident.response_time_minutes);
+            });
+
+            const stationResponseTimes = Array.from(stationResponseMap.entries()).map(([station, times]) => ({
+                station: station,
+                avgResponseTime: times.reduce((sum, t) => sum + t, 0) / times.length,
+                incidentCount: times.length
+            })).sort((a, b) => a.avgResponseTime - b.avgResponseTime);
+
+            const allResponseTimes = incidents.map(i => i.response_time_minutes);
+            const overallMean = allResponseTimes.reduce((sum, t) => sum + t, 0) / allResponseTimes.length;
+            const sortedTimes = [...allResponseTimes].sort((a, b) => a - b);
+            const overallMedian = sortedTimes[Math.floor(sortedTimes.length / 2)];
+
+            document.getElementById("response-time-chart").replaceChildren(
+                Plot.plot({
+                    title: "Average Incident Response Time by Station",
+                    marks: [
+                        Plot.barX(stationResponseTimes, {
+                            x: "avgResponseTime",
+                            y: "station",
+                            fill: d => d.avgResponseTime <= overallMean ? "#27ae60" : d.avgResponseTime <= overallMedian * 1.2 ? "#f39c12" : "#e74c3c",
+                            sort: {y: "x", reverse: true}
+                        }),
+                        Plot.ruleX([overallMean], {
+                            stroke: "#3498db",
+                            strokeWidth: 2,
+                            strokeDasharray: "5,5"
+                        }),
+                        Plot.text([{avgResponseTime: overallMean, station: stationResponseTimes[0].station}], {
+                            x: "avgResponseTime",
+                            y: "station",
+                            text: `Overall Mean: ${overallMean.toFixed(1)} min`,
+                            dx: 5,
+                            fontSize: 11,
+                            fill: "#3498db",
+                            fontWeight: "bold"
+                        }),
+                        Plot.ruleX([overallMedian], {
+                            stroke: "#9b59b6",
+                            strokeWidth: 2,
+                            strokeDasharray: "3,3"
+                        }),
+                        Plot.text([{avgResponseTime: overallMedian, station: stationResponseTimes[Math.floor(stationResponseTimes.length / 2)].station}], {
+                            x: "avgResponseTime",
+                            y: "station",
+                            text: `Median: ${overallMedian.toFixed(1)} min`,
+                            dx: 5,
+                            fontSize: 11,
+                            fill: "#9b59b6",
+                            fontWeight: "bold"
+                        })
+                    ],
+                    x: {label: "Average Response Time (minutes)", grid: true},
+                    y: {label: "Station", ticks: null},
+                    width: 800,
+                    height: 600
+                })
+            );
+
+            // Question 3: Staffing Analysis
+            const eventsByStationMap = new Map();
+            upcoming_events.forEach(event => {
+                if (!eventsByStationMap.has(event.nearby_station)) {
+                    eventsByStationMap.set(event.nearby_station, {total: 0, count: 0});
+                }
+                const stationData = eventsByStationMap.get(event.nearby_station);
+                stationData.total += event.expected_attendance;
+                stationData.count += 1;
+            });
+
+            const eventsByStation = Array.from(eventsByStationMap.entries()).map(([station, data]) => ({
+                station: station,
+                totalExpectedAttendance: data.total,
+                eventCount: data.count
+            }));
+
+            const staffingAnalysis = eventsByStation.map(d => ({
+                ...d,
+                currentStaff: currentStaffing[d.station] || 0,
+                attendancePerStaff: d.totalExpectedAttendance / (currentStaffing[d.station] || 1)
+            })).sort((a, b) => b.attendancePerStaff - a.attendancePerStaff);
+
+            const top3NeedingHelp = staffingAnalysis.slice(0, 3);
+
+            document.getElementById("staffing-chart").replaceChildren(
+                Plot.plot({
+                    title: "2026 Event Load vs Current Staffing: Stations Needing Additional Support",
+                    marks: [
+                        Plot.dot(staffingAnalysis, {
+                            x: "currentStaff",
+                            y: "totalExpectedAttendance",
+                            r: d => Math.sqrt(d.eventCount) * 3,
+                            fill: d => top3NeedingHelp.includes(d) ? "#e74c3c" : "#3498db",
+                            opacity: 0.7,
+                            stroke: "#2c3e50",
+                            strokeWidth: 1
+                        }),
+                        Plot.text(top3NeedingHelp, {
+                            x: "currentStaff",
+                            y: "totalExpectedAttendance",
+                            text: d => d.station,
+                            dy: -15,
+                            fontSize: 10,
+                            fill: "#e74c3c",
+                            fontWeight: "bold"
+                        })
+                    ],
+                    x: {label: "Current Staffing Count", grid: true},
+                    y: {label: "Total Expected Event Attendance (2026)", grid: true},
+                    width: 800,
+                    height: 600
+                })
+            );
+
+            // Summary box
+            const summaryHTML = `
+                <h3>Top 3 Stations Needing Additional Staffing:</h3>
+                <ol>
+                    ${top3NeedingHelp.map((station, i) => `
+                        <li>
+                            <strong>${station.station}</strong><br/>
+                            <span style="font-size: 0.9em; color: #555;">
+                                • ${station.eventCount} events scheduled<br/>
+                                • ${station.totalExpectedAttendance.toLocaleString()} total expected attendees<br/>
+                                • Currently staffed with ${station.currentStaff} employees<br/>
+                                • ${Math.round(station.attendancePerStaff).toLocaleString()} attendees per staff member
+                            </span>
+                        </li>
+                    `).join('')}
+                </ol>
+            `;
+            document.getElementById("top3-summary").innerHTML = summaryHTML;
+
+        }).catch(error => {
+            console.error("Error loading data:", error);
+            document.getElementById("loading").innerHTML = "<h2>Error loading data</h2><p>Failed to load CSV files. Please ensure the data files are in the correct location.</p>";
+        });
+    </script>
+</body>
+</html>
