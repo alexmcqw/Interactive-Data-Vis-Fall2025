@@ -67,22 +67,24 @@ const dailyRidership = ridership.map(d => ({
   total: d.entrances + d.exits
 }))
 
-const dailyTotals = Plot.groupX(
-  dailyRidership,
-  {x: "date", y: "total", reduce: "sum"}
-)
+// Group by date and sum totals manually
+const dailyTotalsMap = new Map()
+dailyRidership.forEach(d => {
+  const dateStr = d.date.toISOString().split('T')[0]
+  dailyTotalsMap.set(dateStr, (dailyTotalsMap.get(dateStr) || 0) + d.total)
+})
+const dailyTotals = Array.from(dailyTotalsMap.entries()).map(([dateStr, total]) => ({
+  date: new Date(dateStr),
+  total: total
+})).sort((a, b) => a.date - b.date)
 
 // Merge with events data to identify event days
 const eventDates = new Set(local_events.map(e => e.date.toISOString().split('T')[0]))
-const ridershipWithEvents = dailyRidership.map(d => ({
-  ...d,
-  hasEvent: eventDates.has(d.date.toISOString().split('T')[0])
-}))
 
 // Calculate average ridership before and after fare increase
 const fareIncreaseDate = new Date("2025-07-15")
-const beforeFare = ridershipWithEvents.filter(d => d.date < fareIncreaseDate)
-const afterFare = ridershipWithEvents.filter(d => d.date >= fareIncreaseDate)
+const beforeFare = dailyTotals.filter(d => d.date < fareIncreaseDate)
+const afterFare = dailyTotals.filter(d => d.date >= fareIncreaseDate)
 const avgBefore = beforeFare.reduce((sum, d) => sum + d.total, 0) / beforeFare.length
 const avgAfter = afterFare.reduce((sum, d) => sum + d.total, 0) / afterFare.length
 ```
@@ -167,14 +169,19 @@ Plot.plot({
 We'll analyze incident response times by station to identify which stations have the fastest and slowest response times, which is critical for safety and operational efficiency.
 
 ```js
-// Group incidents by station and calculate average response time
-const stationResponseTimes = Plot.group(
-  incidents,
-  {x: "station", y: "response_time_minutes", reduce: "mean"}
-).map(d => ({
-  station: d.station,
-  avgResponseTime: d.response_time_minutes,
-  incidentCount: incidents.filter(i => i.station === d.station).length
+// Group incidents by station and calculate average response time manually
+const stationResponseMap = new Map()
+incidents.forEach(incident => {
+  if (!stationResponseMap.has(incident.station)) {
+    stationResponseMap.set(incident.station, [])
+  }
+  stationResponseMap.get(incident.station).push(incident.response_time_minutes)
+})
+
+const stationResponseTimes = Array.from(stationResponseMap.entries()).map(([station, times]) => ({
+  station: station,
+  avgResponseTime: times.reduce((sum, t) => sum + t, 0) / times.length,
+  incidentCount: times.length
 })).sort((a, b) => a.avgResponseTime - b.avgResponseTime)
 
 // Calculate overall mean and median
@@ -244,14 +251,21 @@ Plot.plot({
 We'll analyze the 2026 upcoming events calendar, calculate expected ridership impact, and compare it with current staffing levels to identify stations that will be understaffed.
 
 ```js
-// Aggregate upcoming events by station
-const eventsByStation = Plot.group(
-  upcoming_events,
-  {x: "nearby_station", y: "expected_attendance", reduce: "sum"}
-).map(d => ({
-  station: d.nearby_station,
-  totalExpectedAttendance: d.expected_attendance,
-  eventCount: upcoming_events.filter(e => e.nearby_station === d.nearby_station).length
+// Aggregate upcoming events by station manually
+const eventsByStationMap = new Map()
+upcoming_events.forEach(event => {
+  if (!eventsByStationMap.has(event.nearby_station)) {
+    eventsByStationMap.set(event.nearby_station, {total: 0, count: 0})
+  }
+  const stationData = eventsByStationMap.get(event.nearby_station)
+  stationData.total += event.expected_attendance
+  stationData.count += 1
+})
+
+const eventsByStation = Array.from(eventsByStationMap.entries()).map(([station, data]) => ({
+  station: station,
+  totalExpectedAttendance: data.total,
+  eventCount: data.count
 }))
 
 // Merge with current staffing
