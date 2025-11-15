@@ -103,6 +103,7 @@ Plot.plot({
       x: "date",
       y: "total",
       fill: d => eventDates.has(d.date.toISOString().split('T')[0]) ? "Event Day" : "Regular Day",
+      symbol: "circle",
       r: 3,
       opacity: 0.7
     }),
@@ -161,7 +162,8 @@ Plot.plot({
   },
   symbol: {
     legend: true,
-    domain: ["Event Day", "Regular Day"]
+    domain: ["Event Day", "Regular Day"],
+    range: ["circle", "circle"]
   },
   marginLeft: 60,
   marginRight: 40,
