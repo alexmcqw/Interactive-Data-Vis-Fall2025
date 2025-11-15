@@ -114,11 +114,14 @@ Plot.plot({
     Plot.text([{date: fareIncreaseDate, total: Math.max(...dailyTotals.map(d => d.total))}], {
       x: "date",
       y: "total",
-      text: "Fare Increase\n$2.75 → $3.00",
-      dy: -20,
-      fontSize: 12,
+      text: "July 15, 2025\nFare Increase\n$2.75 → $3.00",
+      dy: -30,
+      dx: 0,
+      fontSize: 13,
       fill: "#f39c12",
-      fontWeight: "bold"
+      fontWeight: "bold",
+      lineHeight: 1.3,
+      textAnchor: "middle"
     }),
     Plot.ruleY([avgBefore], {
       y: avgBefore,
