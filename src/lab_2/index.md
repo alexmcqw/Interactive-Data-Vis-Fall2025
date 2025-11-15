@@ -222,7 +222,7 @@ Plot.plot({
     Plot.barX(stationResponseTimes, {
       x: "avgResponseTime",
       y: "station",
-      fill: d => d.avgResponseTime <= overallMean ? "Below Mean" : d.avgResponseTime <= overallMedian * 1.2 ? "Near Average" : "Above Average",
+      fill: d => d.avgResponseTime <= overallMean ? "Below Mean" : "Above Average",
       sort: {y: "x", reverse: true}
     }),
     Plot.ruleX([overallMean], {
@@ -258,8 +258,8 @@ Plot.plot({
   y: {label: "Station", ticks: null},
   color: {
     legend: true,
-    domain: ["Below Mean", "Near Average", "Above Average"],
-    range: ["#27ae60", "#f39c12", "#e74c3c"]
+    domain: ["Below Mean", "Above Average"],
+    range: ["#27ae60", "#e74c3c"]
   },
   marginLeft: 120,
   marginRight: 40,
