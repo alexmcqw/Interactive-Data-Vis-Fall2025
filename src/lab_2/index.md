@@ -150,6 +150,21 @@ Plot.plot({
       dx: 10,
       fontSize: 10,
       fill: "#95a5a6"
+    }),
+    Plot.tip([{date: fareIncreaseDate, total: Math.max(...dailyTotals.map(d => d.total)) * 0.5}], {
+      x: "date",
+      y: "total",
+      title: "July 15, 2025\nFare Increase\n$2.75 → $3.00"
+    }),
+    Plot.tip([{date: new Date("2025-06-15"), total: avgBefore}], {
+      x: "date",
+      y: "total",
+      title: `Pre-Increase Average\n${Math.round(avgBefore).toLocaleString()} daily riders`
+    }),
+    Plot.tip([{date: new Date("2025-08-01"), total: avgAfter}], {
+      x: "date",
+      y: "total",
+      title: `Post-Increase Average\n${Math.round(avgAfter).toLocaleString()} daily riders`
     })
   ],
   x: {label: "Date", type: "time"},
