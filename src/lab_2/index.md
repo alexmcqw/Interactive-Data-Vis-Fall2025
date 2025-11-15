@@ -257,7 +257,7 @@ Plot.plot({
   x: {label: "Average Response Time (minutes)", grid: true},
   y: {label: "Station", ticks: null},
   color: {
-    legend: true,
+    legend: false,
     domain: ["Below Mean", "Above Average"],
     range: ["#27ae60", "#e74c3c"]
   },
