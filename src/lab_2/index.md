@@ -368,5 +368,3 @@ Based on this analysis, the NYC Transit Authority should:
 3. **Prioritize Staffing for 2026**: Focus additional staffing resources on the three identified priority stations during their scheduled event dates to ensure safe and efficient operations.
 
 4. **Fare Increase Impact**: The 2.4% ridership decrease following the fare increase is relatively modest, suggesting the fare change was well-tolerated by riders.
-
-This analysis provides a data-driven foundation for making informed staffing decisions that balance operational efficiency, safety, and cost-effectiveness.
