@@ -102,7 +102,7 @@ Plot.plot({
     Plot.dot(dailyTotals, {
       x: "date",
       y: "total",
-      fill: d => eventDates.has(d.date.toISOString().split('T')[0]) ? "#e74c3c" : "#3498db",
+      fill: d => eventDates.has(d.date.toISOString().split('T')[0]) ? "Event Day" : "Regular Day",
       r: 3,
       opacity: 0.7
     }),
@@ -154,7 +154,15 @@ Plot.plot({
   ],
   x: {label: "Date", type: "time"},
   y: {label: "Total Daily Ridership", grid: true},
-  color: {legend: true, domain: ["Event Day", "Regular Day"]},
+  color: {
+    legend: true, 
+    domain: ["Event Day", "Regular Day"],
+    range: ["#e74c3c", "#3498db"]
+  },
+  symbol: {
+    legend: true,
+    domain: ["Event Day", "Regular Day"]
+  },
   marginLeft: 60,
   marginRight: 40,
   width: 800,
