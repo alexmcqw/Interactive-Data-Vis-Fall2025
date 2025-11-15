@@ -152,7 +152,9 @@ Plot.plot({
   x: {label: "Date", type: "time"},
   y: {label: "Total Daily Ridership", grid: true},
   color: {legend: true, domain: ["Event Day", "Regular Day"]},
-  width: 900,
+  marginLeft: 60,
+  marginRight: 40,
+  width: 800,
   height: 500
 })
 ```
@@ -233,7 +235,9 @@ Plot.plot({
   x: {label: "Average Response Time (minutes)", grid: true},
   y: {label: "Station", ticks: null},
   color: {legend: true, domain: ["Below Mean", "Near Average", "Above Average"]},
-  width: 800,
+  marginLeft: 120,
+  marginRight: 40,
+  width: 700,
   height: 600
 })
 ```
@@ -310,7 +314,9 @@ Plot.plot({
   x: {label: "Current Staffing Count", grid: true},
   y: {label: "Total Expected Event Attendance (2026)", grid: true},
   color: {legend: true, domain: ["Top 3 Priority", "Other Stations"]},
-  width: 800,
+  marginLeft: 60,
+  marginRight: 40,
+  width: 700,
   height: 600
 })
 ```
