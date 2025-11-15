@@ -208,14 +208,9 @@ const stationResponseTimes = Array.from(stationResponseMap.entries()).map(([stat
   incidentCount: times.length
 })).sort((a, b) => a.avgResponseTime - b.avgResponseTime)
 
-// Calculate overall mean and median
+// Calculate overall mean
 const allResponseTimes = incidents.map(i => i.response_time_minutes)
 const overallMean = allResponseTimes.reduce((sum, t) => sum + t, 0) / allResponseTimes.length
-const sortedTimes = [...allResponseTimes].sort((a, b) => a - b)
-const mid = Math.floor(sortedTimes.length / 2)
-const overallMedian = sortedTimes.length % 2 === 0 
-  ? (sortedTimes[mid - 1] + sortedTimes[mid]) / 2 
-  : sortedTimes[mid]
 ```
 
 ```js
@@ -241,20 +236,6 @@ Plot.plot({
       fontSize: 11,
       fill: "#3498db",
       fontWeight: "bold"
-    }),
-    Plot.ruleX([overallMedian], {
-      stroke: "#9b59b6",
-      strokeWidth: 2,
-      strokeDasharray: "3,3"
-    }),
-    Plot.text([{avgResponseTime: overallMedian, station: stationResponseTimes[Math.floor(stationResponseTimes.length / 2)].station}], {
-      x: "avgResponseTime",
-      y: "station",
-      text: `Median: ${overallMedian.toFixed(1)} min`,
-      dx: 5,
-      fontSize: 11,
-      fill: "#9b59b6",
-      fontWeight: "bold"
     })
   ],
   x: {label: "Average Response Time (minutes)", grid: true},
@@ -274,7 +255,7 @@ Plot.plot({
 **Key Findings:**
 - **Best Performing Stations** (Green): Stations like "Herald Sq-34 St" and "34 St-Penn Station" have response times well below the overall mean (shown as blue dashed line), indicating efficient incident management.
 - **Worst Performing Stations** (Red): Stations like "59 St-Columbus Circle" and "28 St" have response times significantly above average, with some exceeding 10 minutes.
-- **Overall Statistics**: The median and mean response times are shown as dashed lines on the chart, suggesting some stations have outlier slow response times that skew the average.
+- **Overall Statistics**: The mean response time is shown as a blue dashed line on the chart, suggesting some stations have outlier slow response times that skew the average.
 - **Staffing Correlation**: Stations with higher staffing counts generally show better response times, though there are exceptions that may need investigation.
 
 ---
