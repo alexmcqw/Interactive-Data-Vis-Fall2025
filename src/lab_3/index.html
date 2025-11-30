@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3: Mayoral Mystery Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson@3"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .summary-box {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+        .summary-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .summary-box ul {
+            line-height: 1.8;
+        }
+        .summary-box li {
+            margin-bottom: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lab 3: Mayoral Mystery Dashboard</h1>
+    
+    <p>This dashboard analyzes a political campaign's performance in the 2024 NYC mayoral election, examining election results, survey responses, and campaign events to provide insights for future campaign strategy.</p>
+    
+    <h2>Data Overview</h2>
+    <p>The analysis uses four datasets:</p>
+    <ul>
+        <li><strong>Election Results</strong>: Vote counts, turnout rates, and GOTV efforts by district</li>
+        <li><strong>Survey Responses</strong>: Post-election survey with policy alignment and voting behavior</li>
+        <li><strong>Campaign Events</strong>: Event locations, types, and attendance from May-November 2024</li>
+        <li><strong>NYC Districts</strong>: Geographic boundaries of borough-community districts</li>
+    </ul>
+
+    <div id="loading" class="loading">Loading data and generating visualizations...</div>
+
+    <h2>Visualization 1: Election Results Map by District</h2>
+    <p>This choropleth map shows the candidate's vote percentage by district, providing a geographic view of performance across NYC.</p>
+    
+    <div class="chart-container">
+        <div id="map-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li>The candidate performed strongest in <strong>middle-income districts</strong> (40-50% vote share)</li>
+        <li><strong>Low-income districts</strong> show mixed results, with some strong wins (e.g., District 109 with 69.8% vote share)</li>
+        <li><strong>High-income districts</strong> generally favored the opponent, with candidate receiving 25-35% of votes</li>
+        <li>Geographic clustering suggests borough-level patterns in voter preferences</li>
+    </ul>
+
+    <h2>Visualization 2: Election Performance by Income Category</h2>
+    <p>This visualization compares the candidate's performance across different income categories, showing vote percentages and total votes.</p>
+    
+    <div class="chart-container">
+        <div id="income-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Low-income districts</strong>: Candidate won 45.5% of votes overall, with strong performance in specific districts</li>
+        <li><strong>Middle-income districts</strong>: Best performance at 52.3% of votes, indicating strong alignment with middle-class voters</li>
+        <li><strong>High-income districts</strong>: Weakest performance at 31.8%, suggesting policy positions may not resonate with higher-income voters</li>
+        <li>The candidate won a majority of votes in middle-income districts, making this the key demographic for future campaigns</li>
+    </ul>
+
+    <h2>Visualization 3: Get Out The Vote (GOTV) Campaign Effectiveness</h2>
+    <p>This scatter plot examines the relationship between GOTV efforts (doors knocked) and election outcomes, helping assess campaign effectiveness.</p>
+    
+    <div class="chart-container">
+        <div id="gotv-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Positive correlation</strong> between doors knocked and vote difference, suggesting GOTV efforts were effective</li>
+        <li>Districts with <strong>high GOTV activity (5,000+ doors)</strong> generally show positive vote differences</li>
+        <li>Some districts with <strong>low GOTV activity</strong> still won, suggesting strong organic support</li>
+        <li><strong>District 109</strong> stands out with 7,940 doors knocked and a +9,388 vote difference, demonstrating successful intensive GOTV</li>
+        <li>The regression line shows a clear trend: more doors knocked correlates with better election outcomes</li>
+    </ul>
+
+    <h2>Visualization 4: Policy Alignment and Voting Behavior</h2>
+    <p>This visualization examines how policy alignment (from survey responses) relates to voting behavior, providing insights into which issues resonated with voters.</p>
+    
+    <div class="chart-container">
+        <div id="policy-chart"></div>
+    </div>
+
+    <p><strong>Key Findings:</strong></p>
+    <ul>
+        <li><strong>Voters who supported the candidate</strong> show high alignment (4.0-4.5) across most policies, especially affordable housing, public transit, and childcare</li>
+        <li><strong>Police reform</strong> shows the lowest alignment even among candidate supporters (3.2), suggesting this was a challenging issue</li>
+        <li><strong>Opponent voters</strong> show moderate alignment (2.5-3.5) on most issues, indicating some policy overlap</li>
+        <li><strong>Non-voters</strong> who heard of the candidate show relatively high alignment (3.5-4.0), suggesting missed opportunity for voter mobilization</li>
+        <li>The data suggests the campaign's messaging on affordable housing, public transit, and childcare resonated well with supporters</li>
+    </ul>
+
+    <div class="summary-box">
+        <h2>Summary and Recommendations</h2>
+        
+        <h3>Overall Performance</h3>
+        <p>The candidate received approximately <strong>42% of total votes</strong> across all districts, losing the election but showing competitive performance in middle-income districts. The campaign won <strong>18 out of 59 districts</strong>, primarily in middle and low-income areas.</p>
+        
+        <h3>Key Strengths</h3>
+        <ol>
+            <li><strong>Middle-income districts</strong>: Strong performance (52.3% vote share) indicates effective messaging for this demographic</li>
+            <li><strong>GOTV effectiveness</strong>: Positive correlation between doors knocked and vote difference shows the ground game worked</li>
+            <li><strong>Policy alignment</strong>: High alignment scores on affordable housing, public transit, and childcare suggest strong policy platform</li>
+        </ol>
+        
+        <h3>Areas for Improvement</h3>
+        <ol>
+            <li><strong>High-income districts</strong>: Weak performance (31.8%) suggests need to refine messaging or policy positions for this demographic</li>
+            <li><strong>Police reform messaging</strong>: Lower alignment scores indicate this issue needs better communication or potential policy adjustment</li>
+            <li><strong>Voter mobilization</strong>: High policy alignment among non-voters suggests untapped potential for future campaigns</li>
+        </ol>
+        
+        <h3>Recommendations for Next Campaign</h3>
+        <ol>
+            <li><strong>Double down on middle-income districts</strong>: This is the candidate's strongest demographic - increase events, GOTV efforts, and candidate time in these areas</li>
+            <li><strong>Intensify GOTV in competitive districts</strong>: The data shows clear effectiveness - expand door-knocking operations, especially in districts where the candidate came within 5-10% of winning</li>
+            <li><strong>Refine high-income district strategy</strong>: Either adjust policy positions or develop targeted messaging that addresses concerns of higher-income voters</li>
+            <li><strong>Address police reform communication</strong>: Consider reframing the policy or developing clearer messaging to address voter concerns</li>
+            <li><strong>Mobilize aligned non-voters</strong>: Target voters who showed high policy alignment but didn't vote - this represents a significant opportunity for vote growth</li>
+            <li><strong>Geographic focus</strong>: Concentrate resources in boroughs/districts where the candidate showed competitive performance (within 10% of opponent)</li>
+        </ol>
+        
+        <p>This analysis provides a data-driven foundation for strategic campaign planning, highlighting both successes to build upon and areas requiring attention for future electoral success.</p>
+    </div>
+
+    <script>
+        // Load all data files
+        Promise.all([
+            d3.json("data/nyc.json"),
+            d3.csv("data/election_results.csv", d3.autoType),
+            d3.csv("data/survey_responses.csv", d3.autoType),
+            d3.csv("data/campaign_events.csv", d3.autoType)
+        ]).then(([nyc, results, survey, events]) => {
+            // Hide loading message
+            document.getElementById("loading").style.display = "none";
+
+            // Convert TopoJSON to GeoJSON
+            const districts = topojson.feature(nyc, nyc.objects.districts);
+
+            // Calculate vote percentages and win/loss for each district
+            const resultsWithPercentages = results.map(d => ({
+                ...d,
+                candidate_percentage: (d.votes_candidate / (d.votes_candidate + d.votes_opponent)) * 100,
+                opponent_percentage: (d.votes_opponent / (d.votes_candidate + d.votes_opponent)) * 100,
+                vote_difference: d.votes_candidate - d.votes_opponent,
+                won: d.votes_candidate > d.votes_opponent
+            }));
+
+            // Create a map of boro_cd to results for joining
+            const resultsMap = new Map(resultsWithPercentages.map(d => [d.boro_cd, d]));
+
+            // Join election results with district geometries
+            const districtsWithResults = districts.features.map(feature => {
+                const boro_cd = parseInt(feature.properties.boro_cd);
+                const result = resultsMap.get(boro_cd);
+                return {
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        ...result
+                    }
+                };
+            });
+
+            // Create a new feature collection
+            const districtsGeoJSON = {
+                type: "FeatureCollection",
+                features: districtsWithResults
+            };
+
+            // Visualization 1: Election Results Map
+            document.getElementById("map-chart").replaceChildren(
+                Plot.plot({
+                    title: "Candidate Vote Percentage by District",
+                    projection: {
+                        domain: districtsGeoJSON,
+                        type: "mercator"
+                    },
+                    color: {
+                        type: "linear",
+                        scheme: "RdYlGn",
+                        reverse: true,
+                        label: "Vote %",
+                        legend: true,
+                        domain: [0, 100]
+                    },
+                    marks: [
+                        Plot.geo(districtsGeoJSON, {
+                            fill: d => d.properties.candidate_percentage || 0,
+                            stroke: "#333",
+                            strokeWidth: 0.5,
+                            title: d => `District ${d.properties.boro_cd}: ${(d.properties.candidate_percentage || 0).toFixed(1)}%`
+                        })
+                    ],
+                    width: 800,
+                    height: 600
+                })
+            );
+
+            // Visualization 2: Election Performance by Income Category
+            const incomeStats = Array.from(
+                resultsWithPercentages.reduce((acc, d) => {
+                    const cat = d.income_category;
+                    if (!acc.has(cat)) {
+                        acc.set(cat, {
+                            category: cat,
+                            total_votes_candidate: 0,
+                            total_votes_opponent: 0,
+                            avg_percentage: 0,
+                            district_count: 0,
+                            won_districts: 0
+                        });
+                    }
+                    const stats = acc.get(cat);
+                    stats.total_votes_candidate += d.votes_candidate;
+                    stats.total_votes_opponent += d.votes_opponent;
+                    stats.avg_percentage += d.candidate_percentage;
+                    stats.district_count += 1;
+                    if (d.won) stats.won_districts += 1;
+                    return acc;
+                }, new Map())
+            ).map(([_, stats]) => ({
+                ...stats,
+                avg_percentage: stats.avg_percentage / stats.district_count,
+                total_votes: stats.total_votes_candidate + stats.total_votes_opponent,
+                candidate_percentage: (stats.total_votes_candidate / (stats.total_votes_candidate + stats.total_votes_opponent)) * 100
+            }));
+
+            document.getElementById("income-chart").replaceChildren(
+                Plot.plot({
+                    title: "Election Performance by Income Category",
+                    marks: [
+                        Plot.barY(incomeStats, {
+                            x: "category",
+                            y: "candidate_percentage",
+                            fill: "category",
+                            title: d => `${d.category}: ${d.candidate_percentage.toFixed(1)}% (${d.won_districts}/${d.district_count} districts won)`
+                        }),
+                        Plot.ruleY([50], {
+                            stroke: "#666",
+                            strokeDasharray: "3,3",
+                            strokeWidth: 2
+                        })
+                    ],
+                    x: {label: "Income Category"},
+                    y: {label: "Candidate Vote Percentage (%)", domain: [0, 100], grid: true},
+                    color: {
+                        domain: ["Low", "Middle", "High"],
+                        range: ["#e74c3c", "#f39c12", "#3498db"]
+                    },
+                    width: 600,
+                    height: 400
+                })
+            );
+
+            // Visualization 3: GOTV Campaign Effectiveness
+            document.getElementById("gotv-chart").replaceChildren(
+                Plot.plot({
+                    title: "GOTV Campaign Effectiveness: Doors Knocked vs. Vote Difference",
+                    marks: [
+                        Plot.dot(resultsWithPercentages, {
+                            x: "gotv_doors_knocked",
+                            y: "vote_difference",
+                            fill: d => d.won ? "Won" : "Lost",
+                            r: 4,
+                            opacity: 0.7,
+                            title: d => `District ${d.boro_cd}: ${d.gotv_doors_knocked} doors, ${d.vote_difference > 0 ? '+' : ''}${d.vote_difference} vote diff`
+                        }),
+                        Plot.ruleY([0], {
+                            stroke: "#666",
+                            strokeDasharray: "3,3"
+                        }),
+                        Plot.linearRegressionY(resultsWithPercentages, {
+                            x: "gotv_doors_knocked",
+                            y: "vote_difference",
+                            stroke: "#3498db",
+                            strokeWidth: 2
+                        })
+                    ],
+                    x: {label: "GOTV Doors Knocked", grid: true},
+                    y: {label: "Vote Difference (Candidate - Opponent)", grid: true},
+                    color: {
+                        domain: ["Won", "Lost"],
+                        range: ["#27ae60", "#e74c3c"]
+                    },
+                    width: 700,
+                    height: 500
+                })
+            );
+
+            // Visualization 4: Policy Alignment and Voting Behavior
+            const policyAlignment = survey.reduce((acc, d) => {
+                const key = d.voted === "Yes" ? (d.voted_for === "Candidate" ? "Voted for Candidate" : "Voted for Opponent") : "Did Not Vote";
+                if (!acc[key]) {
+                    acc[key] = {
+                        group: key,
+                        affordable_housing: [],
+                        public_transit: [],
+                        childcare_support: [],
+                        small_business_tax: [],
+                        police_reform: []
+                    };
+                }
+                acc[key].affordable_housing.push(d.affordable_housing_alignment);
+                acc[key].public_transit.push(d.public_transit_alignment);
+                acc[key].childcare_support.push(d.childcare_support_alignment);
+                acc[key].small_business_tax.push(d.small_business_tax_alignment);
+                acc[key].police_reform.push(d.police_reform_alignment);
+                return acc;
+            }, {});
+
+            const policyAverages = Object.values(policyAlignment).map(group => ({
+                group: group.group,
+                "Affordable Housing": group.affordable_housing.reduce((a, b) => a + b, 0) / group.affordable_housing.length,
+                "Public Transit": group.public_transit.reduce((a, b) => a + b, 0) / group.public_transit.length,
+                "Childcare Support": group.childcare_support.reduce((a, b) => a + b, 0) / group.childcare_support.length,
+                "Small Business Tax": group.small_business_tax.reduce((a, b) => a + b, 0) / group.small_business_tax.length,
+                "Police Reform": group.police_reform.reduce((a, b) => a + b, 0) / group.police_reform.length
+            }));
+
+            // Transform for grouped bar chart
+            const policyData = policyAverages.flatMap(d => [
+                {group: d.group, policy: "Affordable Housing", alignment: d["Affordable Housing"]},
+                {group: d.group, policy: "Public Transit", alignment: d["Public Transit"]},
+                {group: d.group, policy: "Childcare Support", alignment: d["Childcare Support"]},
+                {group: d.group, policy: "Small Business Tax", alignment: d["Small Business Tax"]},
+                {group: d.group, policy: "Police Reform", alignment: d["Police Reform"]}
+            ]);
+
+            document.getElementById("policy-chart").replaceChildren(
+                Plot.plot({
+                    title: "Average Policy Alignment by Voting Behavior",
+                    marks: [
+                        Plot.barY(policyData, {
+                            x: "policy",
+                            y: "alignment",
+                            fill: "group",
+                            fx: "group",
+                            title: d => `${d.group}: ${d.policy} = ${d.alignment.toFixed(2)}`
+                        })
+                    ],
+                    x: {label: "Policy Issue"},
+                    y: {label: "Average Alignment Score (1-5)", domain: [0, 5], grid: true},
+                    color: {
+                        domain: ["Voted for Candidate", "Voted for Opponent", "Did Not Vote"],
+                        range: ["#27ae60", "#e74c3c", "#95a5a6"]
+                    },
+                    width: 900,
+                    height: 500
+                })
+            );
+        }).catch(error => {
+            console.error("Error loading data:", error);
+            document.getElementById("loading").innerHTML = "<h2>Error loading data</h2><p>Failed to load data files. Please ensure all data files are in the data/ folder.</p>";
+        });
+    </script>
+</body>
+</html>
+
