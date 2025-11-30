@@ -233,7 +233,11 @@
                     },
                     marks: [
                         Plot.geo(districtsGeoJSON, {
-                            fill: d => d.properties.candidate_percentage || 0,
+                            fill: d => {
+                                const pct = d.properties.candidate_percentage;
+                                if (pct === 0 || pct === null || pct === undefined) return "#95a5a6";
+                                return pct;
+                            },
                             stroke: "#333",
                             strokeWidth: 0.5,
                             title: d => `District ${d.properties.boro_cd || d.properties.BoroCD}: ${(d.properties.candidate_percentage || 0).toFixed(1)}%`
