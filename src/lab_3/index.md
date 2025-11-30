@@ -72,7 +72,7 @@ Plot.plot({
   },
   color: {
     type: "linear",
-    scheme: "RdYlGn",
+    scheme: "RdBu",
     reverse: true,
     label: "Vote %",
     legend: true,
