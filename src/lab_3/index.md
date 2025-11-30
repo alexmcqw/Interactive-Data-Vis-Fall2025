@@ -41,7 +41,7 @@ const resultsMap = new Map(resultsWithPercentages.map(d => [d.boro_cd, d]));
 
 // Join election results with district geometries
 const districtsWithResults = districts.features.map(feature => {
-  const boro_cd = parseInt(feature.properties.boro_cd);
+  const boro_cd = parseInt(feature.properties.BoroCD);
   const result = resultsMap.get(boro_cd);
   return {
     ...feature,
@@ -83,7 +83,7 @@ Plot.plot({
       fill: d => d.properties.candidate_percentage || 0,
       stroke: "#333",
       strokeWidth: 0.5,
-      title: d => `District ${d.properties.boro_cd}: ${(d.properties.candidate_percentage || 0).toFixed(1)}%`
+      title: d => `District ${d.properties.boro_cd || d.properties.BoroCD}: ${(d.properties.candidate_percentage || 0).toFixed(1)}%`
     })
   ],
   width: 800,
