@@ -8,7 +8,7 @@ The dataset contains observations from June 1-30, 2024, across four garden plots
 
 ```js
 // Load pollinator activity data from CSV file
-data = FileAttachment("data/pollinator_activity_data.csv").csv({typed: true})
+const data = FileAttachment("data/pollinator_activity_data.csv").csv({typed: true})
 ```
 
 ## Question 1: Body Mass vs Wing Span by Pollinator Species
