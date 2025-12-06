@@ -134,7 +134,9 @@ const incomeStats = Array.from(
   total_votes: stats.total_votes_candidate + stats.total_votes_opponent,
   candidate_percentage: (stats.total_votes_candidate / (stats.total_votes_candidate + stats.total_votes_opponent)) * 100
 })).filter(d => d.category !== "Unknown");
+```
 
+```js
 Plot.plot({
   title: "Election Performance by Income Category",
   marks: [
@@ -262,7 +264,9 @@ const policyData = policyAverages.flatMap(d => [
   {group: d.group, policy: "Small Business Tax", alignment: d["Small Business Tax"]},
   {group: d.group, policy: "Police Reform", alignment: d["Police Reform"]}
 ]);
+```
 
+```js
 Plot.plot({
   title: "Average Policy Alignment by Voting Behavior",
   marks: [
