@@ -109,7 +109,7 @@ This visualization compares the candidate's performance across different income 
 // Aggregate results by income category
 const incomeStats = Array.from(
   resultsWithPercentages.reduce((acc, d) => {
-    const cat = d.income_category;
+    const cat = d.income_category || "Unknown";
     if (!acc.has(cat)) {
       acc.set(cat, {
         category: cat,
@@ -121,9 +121,9 @@ const incomeStats = Array.from(
       });
     }
     const stats = acc.get(cat);
-    stats.total_votes_candidate += d.votes_candidate;
-    stats.total_votes_opponent += d.votes_opponent;
-    stats.avg_percentage += d.candidate_percentage;
+    stats.total_votes_candidate += d.votes_candidate || 0;
+    stats.total_votes_opponent += d.votes_opponent || 0;
+    stats.avg_percentage += d.candidate_percentage || 0;
     stats.district_count += 1;
     if (d.won) stats.won_districts += 1;
     return acc;
@@ -133,7 +133,7 @@ const incomeStats = Array.from(
   avg_percentage: stats.avg_percentage / stats.district_count,
   total_votes: stats.total_votes_candidate + stats.total_votes_opponent,
   candidate_percentage: (stats.total_votes_candidate / (stats.total_votes_candidate + stats.total_votes_opponent)) * 100
-}));
+})).filter(d => d.category !== "Unknown");
 
 Plot.plot({
   title: "Election Performance by Income Category",
@@ -219,7 +219,14 @@ This visualization examines how policy alignment (from survey responses) relates
 ```js
 // Calculate average policy alignment scores by voting behavior
 const policyAlignment = survey.reduce((acc, d) => {
-  const key = d.voted === "Yes" ? (d.voted_for === "Candidate" ? "Voted for Candidate" : "Voted for Opponent") : "Did Not Vote";
+  let key;
+  if (d.voted === "Yes" && d.voted_for === "Candidate") {
+    key = "Voted for Candidate";
+  } else if (d.voted === "Yes" && d.voted_for === "Opponent") {
+    key = "Voted for Opponent";
+  } else {
+    key = "Did Not Vote";
+  }
   if (!acc[key]) {
     acc[key] = {
       group: key,
@@ -230,11 +237,11 @@ const policyAlignment = survey.reduce((acc, d) => {
       police_reform: []
     };
   }
-  acc[key].affordable_housing.push(d.affordable_housing_alignment);
-  acc[key].public_transit.push(d.public_transit_alignment);
-  acc[key].childcare_support.push(d.childcare_support_alignment);
-  acc[key].small_business_tax.push(d.small_business_tax_alignment);
-  acc[key].police_reform.push(d.police_reform_alignment);
+  if (d.affordable_housing_alignment != null) acc[key].affordable_housing.push(d.affordable_housing_alignment);
+  if (d.public_transit_alignment != null) acc[key].public_transit.push(d.public_transit_alignment);
+  if (d.childcare_support_alignment != null) acc[key].childcare_support.push(d.childcare_support_alignment);
+  if (d.small_business_tax_alignment != null) acc[key].small_business_tax.push(d.small_business_tax_alignment);
+  if (d.police_reform_alignment != null) acc[key].police_reform.push(d.police_reform_alignment);
   return acc;
 }, {});
 
