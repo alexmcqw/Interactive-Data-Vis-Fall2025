@@ -390,12 +390,13 @@
                             title: d => `${d.group}: ${d.policy} = ${d.alignment.toFixed(2)}`
                         })
                     ],
-                    x: {label: "Policy Issue"},
+                    x: {label: "Policy Issue", tickRotate: -45},
                     y: {label: "Average Alignment Score (1-5)", domain: [0, 5], grid: true},
                     color: {
                         domain: ["Voted for Candidate", "Voted for Opponent", "Did Not Vote"],
                         range: ["#27ae60", "#e74c3c", "#95a5a6"]
                     },
+                    marginBottom: 80,
                     width: 900,
                     height: 500
                 })
