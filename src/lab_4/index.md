@@ -7,8 +7,6 @@ toc: false
 
 Lake Clearwater has experienced a severe ecological collapse over the past two years. Fish populations have crashed, particularly among sensitive species like trout, and water quality has degraded. This dashboard analyzes the evidence to identify which of the four suspects operating around the lake is responsible for this environmental disaster.
 
-## Data Loading
-
 ```js
 // Import all datasets
 const waterQuality = await FileAttachment("data/water_quality.csv").csv({ typed: true });
@@ -40,7 +38,7 @@ const suspectActivitiesProcessed = suspectActivities.map(d => ({
 }));
 ```
 
-## Visualization 1: Heavy Metals - The Smoking Gun
+## Heavy Metals - The Smoking Gun
 
 Heavy metals are the most critical indicator. The scientific literature shows that trout (highly sensitive fish) experience severe mortality at heavy metal concentrations above 20 ppb. This visualization tracks heavy metal levels across all stations over time.
 
@@ -104,12 +102,12 @@ Plot.plot({
 
 **Key Finding:** The **West station** consistently shows the highest heavy metal contamination, frequently exceeding the 20 ppb concern threshold and occasionally violating the 30 ppb regulatory limit. This is particularly significant because the West station is located at the water entry point to the lake.
 
-## Visualizations 2 & 6: Fish Population Trends
+## Fish Population Trends
 
 <div style="display: flex; gap: 20px; align-items: flex-start;">
 <div style="flex: 1;">
 
-### Visualization 2: Trout Population Collapse - Trout as the Canary
+### Trout Population Collapse - Trout as the Canary
 
 Trout are highly sensitive to heavy metal contamination. This visualization tracks trout populations over time, with special attention to declines.
 
@@ -174,7 +172,7 @@ Plot.plot({
 </div>
 <div style="flex: 1;">
 
-### Visualization 6: Total Fish Population Trends
+### Total Fish Population Trends
 
 This visualization shows the overall impact on fish populations across all species.
 
@@ -231,7 +229,7 @@ Plot.plot({
 </div>
 </div>
 
-## Visualization 3: Spatial Analysis - Proximity to Contamination
+## Spatial Analysis - Proximity to Contamination
 
 This visualization shows the relationship between suspect proximity and contamination levels, revealing which suspect is closest to the most contaminated station.
 
@@ -341,7 +339,7 @@ Plot.plot({
 
 **Key Finding:** There is a clear **inverse relationship** between distance to ChemTech and heavy metal contamination. The West station, only **800 meters** from ChemTech, shows the highest contamination (average ~25 ppb). This spatial correlation is compelling evidence.
 
-## Visualization 4: Temporal Alignment - Activities and Pollution Spikes
+## Temporal Alignment - Activities and Pollution Spikes
 
 This visualization overlays suspect activities with heavy metal contamination to identify temporal correlations.
 
@@ -412,7 +410,7 @@ Plot.plot({
 
 **Key Finding:** Heavy metal spikes at the West station **consistently align** with ChemTech's quarterly maintenance shutdowns. During maintenance, process changes and equipment cleaning can lead to temporary increases in discharge. The pattern is unmistakable: every maintenance period corresponds with elevated contamination.
 
-## Visualization 5: Comprehensive Water Quality Comparison
+## Comprehensive Water Quality Comparison
 
 This visualization compares all key water quality parameters across stations to show the full scope of contamination.
 
