@@ -104,9 +104,14 @@ Plot.plot({
 
 **Key Finding:** The **West station** consistently shows the highest heavy metal contamination, frequently exceeding the 20 ppb concern threshold and occasionally violating the 30 ppb regulatory limit. This is particularly significant because the West station is located at the water entry point to the lake.
 
-## Visualization 2: Fish Population Collapse - Trout as the Canary
+## Visualizations 2 & 6: Fish Population Trends
 
-Trout are highly sensitive to heavy metal contamination. This visualization tracks fish populations over time, with special attention to trout declines.
+<div style="display: flex; gap: 20px; align-items: flex-start;">
+<div style="flex: 1;">
+
+### Visualization 2: Trout Population Collapse - Trout as the Canary
+
+Trout are highly sensitive to heavy metal contamination. This visualization tracks trout populations over time, with special attention to declines.
 
 ```js
 // Calculate total fish counts by station and date
@@ -157,7 +162,7 @@ Plot.plot({
     range: ["#3498db", "#2ecc71", "#9b59b6", "#e74c3c"],
     legend: true
   },
-  width: 900,
+  width: 450,
   height: 500,
   marginLeft: 60,
   marginBottom: 40
@@ -165,6 +170,66 @@ Plot.plot({
 ```
 
 **Key Finding:** Trout populations at the **West station** show the most dramatic decline, dropping from 43 in Q1 2023 to critically low levels. This aligns perfectly with the heavy metal contamination pattern and confirms the West station as the epicenter of the crisis.
+
+</div>
+<div style="flex: 1;">
+
+### Visualization 6: Total Fish Population Trends
+
+This visualization shows the overall impact on fish populations across all species.
+
+```js
+// Calculate total fish by station and date
+const totalFishByStation = fishTrends.reduce((acc, d) => {
+  const key = d.station_id;
+  if (!acc[key]) {
+    acc[key] = [];
+  }
+  acc[key].push({date: d.date, total: d.total, trout: d.trout});
+  return acc;
+}, {});
+
+const totalFishData = Object.entries(totalFishByStation).flatMap(([station, data]) =>
+  data.map(d => ({...d, station_id: station}))
+).sort((a, b) => a.date - b.date);
+```
+
+```js
+Plot.plot({
+  title: "Total Fish Population Trends by Station",
+  marks: [
+    Plot.line(totalFishData, {
+      x: "date",
+      y: "total",
+      stroke: "station_id",
+      strokeWidth: 2.5,
+      curve: "natural"
+    }),
+    Plot.dot(totalFishData, {
+      x: "date",
+      y: "total",
+      fill: "station_id",
+      r: 4
+    })
+  ],
+  x: {label: "Date", grid: true},
+  y: {label: "Total Fish Count", domain: [0, 150], grid: true},
+  color: {
+    domain: ["North", "South", "East", "West"],
+    range: ["#3498db", "#2ecc71", "#9b59b6", "#e74c3c"],
+    legend: true
+  },
+  width: 450,
+  height: 500,
+  marginLeft: 60,
+  marginBottom: 40
+})
+```
+
+**Key Finding:** The West station shows the most severe total fish population decline, with populations dropping by over 50% from baseline. This confirms the ecological collapse is most severe at the point closest to ChemTech.
+
+</div>
+</div>
 
 ## Visualization 3: Spatial Analysis - Proximity to Contamination
 
@@ -228,6 +293,13 @@ Plot.plot({
       dy: -15,
       fontWeight: "bold"
     }),
+    Plot.linearRegressionY(stationAnalysis, {
+      x: "distance_to_chemtech_m",
+      y: "avg_heavy_metals",
+      stroke: "#34495e",
+      strokeWidth: 2,
+      strokeDasharray: "6,4"
+    }),
     Plot.ruleY([20], {
       stroke: "#f39c12",
       strokeDasharray: "3,3"
@@ -235,6 +307,22 @@ Plot.plot({
     Plot.ruleY([30], {
       stroke: "#e74c3c",
       strokeDasharray: "3,3"
+    }),
+    Plot.text([{distance_to_chemtech_m: 3000, avg_heavy_metals: 20, text: "Concern Threshold (20 ppb)"}], {
+      x: "distance_to_chemtech_m",
+      y: "avg_heavy_metals",
+      text: "text",
+      fontSize: 10,
+      dx: 0,
+      dy: -5
+    }),
+    Plot.text([{distance_to_chemtech_m: 3000, avg_heavy_metals: 30, text: "Regulatory Limit (30 ppb)"}], {
+      x: "distance_to_chemtech_m",
+      y: "avg_heavy_metals",
+      text: "text",
+      fontSize: 10,
+      dx: 0,
+      dy: -5
     })
   ],
   x: {label: "Distance to ChemTech Manufacturing (meters)", domain: [0, 6000], grid: true},
@@ -242,7 +330,7 @@ Plot.plot({
   color: {
     domain: ["North", "South", "East", "West"],
     range: ["#3498db", "#2ecc71", "#9b59b6", "#e74c3c"],
-    legend: true
+    legend: false
   },
   width: 800,
   height: 500,
@@ -386,7 +474,7 @@ Plot.plot({
   color: {
     domain: ["North", "South", "East", "West"],
     range: ["#3498db", "#2ecc71", "#9b59b6", "#e74c3c"],
-    legend: true
+    legend: false
   },
   width: 1000,
   height: 500,
@@ -396,60 +484,6 @@ Plot.plot({
 ```
 
 **Key Finding:** The West station shows the worst performance across **multiple parameters**, not just heavy metals. This indicates a comprehensive pollution source, consistent with industrial discharge rather than agricultural runoff or recreational activities.
-
-## Visualization 6: Total Fish Population Trends
-
-This final visualization shows the overall impact on fish populations across all species.
-
-```js
-// Calculate total fish by station and date
-const totalFishByStation = fishTrends.reduce((acc, d) => {
-  const key = d.station_id;
-  if (!acc[key]) {
-    acc[key] = [];
-  }
-  acc[key].push({date: d.date, total: d.total, trout: d.trout});
-  return acc;
-}, {});
-
-const totalFishData = Object.entries(totalFishByStation).flatMap(([station, data]) =>
-  data.map(d => ({...d, station_id: station}))
-).sort((a, b) => a.date - b.date);
-```
-
-```js
-Plot.plot({
-  title: "Total Fish Population Trends by Station",
-  marks: [
-    Plot.line(totalFishData, {
-      x: "date",
-      y: "total",
-      stroke: "station_id",
-      strokeWidth: 2.5,
-      curve: "natural"
-    }),
-    Plot.dot(totalFishData, {
-      x: "date",
-      y: "total",
-      fill: "station_id",
-      r: 4
-    })
-  ],
-  x: {label: "Date", grid: true},
-  y: {label: "Total Fish Count", domain: [0, 150], grid: true},
-  color: {
-    domain: ["North", "South", "East", "West"],
-    range: ["#3498db", "#2ecc71", "#9b59b6", "#e74c3c"],
-    legend: true
-  },
-  width: 900,
-  height: 500,
-  marginLeft: 60,
-  marginBottom: 40
-})
-```
-
-**Key Finding:** The West station shows the most severe total fish population decline, with populations dropping by over 50% from baseline. This confirms the ecological collapse is most severe at the point closest to ChemTech.
 
 ---
 
